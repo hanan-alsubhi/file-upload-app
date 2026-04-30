@@ -1,50 +1,47 @@
 pipeline {
     agent any
 
+    environment {
+        IMAGE_NAME = "file-upload-app"
+    }
+
     stages {
 
-        stage('Checkout') {
+        stage('Build') {
             steps {
-                echo 'Pulling code from GitHub...'
-                git branch: 'main', url: 'https://github.com/hanan-alsubhi/file-upload-app.git'
-            }
-        }
-
-        stage('Install Dependencies') {
-            steps {
-                echo 'Installing npm packages...'
-                bat  'npm install'
+                git 'https://github.com/hanan-alsubhi/file-upload-app.git'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Running basic check...'
-                bat  'node -v'
-                bat  'npm -v'
+                echo 'Testing Node version...'
+                bat 'node -v'
+                bat 'npm -v'
             }
         }
 
-        stage('Build') {
+        stage('Package - Docker Build') {
             steps {
-                echo 'Build stage (no build step needed for this app)'
+                echo 'Building Docker image...'
+                bat 'docker build -t file-upload-app .'
             }
         }
 
-        stage('Deploy') {
+        stage('Deploy - Docker Run') {
             steps {
-                echo 'Starting application...'
+                echo 'Running container...'
+                bat 'docker run -d -p 3000:3000 file-upload-app'
             }
         }
     }
 
     post {
         success {
-            echo 'Pipeline SUCCESS 🎉'
+            echo 'PIPELINE SUCCESS 🎉'
         }
-
         failure {
-            echo 'Pipeline FAILED ❌'
+            echo 'PIPELINE FAILED ❌'
         }
     }
 }
