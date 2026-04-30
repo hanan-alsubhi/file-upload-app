@@ -34,7 +34,6 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Starting application...'
-                bat  'npm start &'
             }
         }
     }
