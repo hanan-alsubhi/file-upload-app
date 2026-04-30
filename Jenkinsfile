@@ -13,15 +13,15 @@ pipeline {
         stage('Install Dependencies') {
             steps {
                 echo 'Installing npm packages...'
-                sh 'npm install'
+                bat  'npm install'
             }
         }
 
         stage('Test') {
             steps {
                 echo 'Running basic check...'
-                sh 'node -v'
-                sh 'npm -v'
+                bat  'node -v'
+                bat  'npm -v'
             }
         }
 
@@ -34,7 +34,7 @@ pipeline {
         stage('Deploy') {
             steps {
                 echo 'Starting application...'
-                sh 'npm start &'
+                bat  'npm start &'
             }
         }
     }
