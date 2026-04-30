@@ -9,13 +9,12 @@ pipeline {
 
         stage('Build') {
             steps {
-                git 'https://github.com/hanan-alsubhi/file-upload-app.git'
+                echo 'Code already checked out by Jenkins'
             }
         }
 
         stage('Test') {
             steps {
-                echo 'Testing Node version...'
                 bat 'node -v'
                 bat 'npm -v'
             }
@@ -23,15 +22,14 @@ pipeline {
 
         stage('Package - Docker Build') {
             steps {
-                echo 'Building Docker image...'
                 bat 'docker build -t file-upload-app .'
             }
         }
 
         stage('Deploy - Docker Run') {
             steps {
-                echo 'Running container...'
-                bat 'docker run -d -p 3000:3000 file-upload-app'
+                bat 'docker rm -f file-upload-app || exit 0'
+                bat 'docker run -d -p 3000:3000 --name file-upload-app file-upload-app'
             }
         }
     }
