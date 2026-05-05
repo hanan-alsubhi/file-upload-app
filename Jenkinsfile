@@ -5,7 +5,7 @@ pipeline {
         APP_NAME = 'file-upload-app'
         IMAGE_NAME = 'file-upload-app'
         CONTAINER_NAME = 'file-upload-container'
-        PORT = '3000'
+        PORT = '3001'
     }
 
     stages {
@@ -30,16 +30,16 @@ pipeline {
             }
         }
 
-        stage('Deploy - Docker Run') {
-            steps {
-                echo 'Deploying container locally...'
-                sh '''
-                docker stop $CONTAINER_NAME || true
-                docker rm $CONTAINER_NAME || true
-                docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME
-                '''
-            }
-        }
+       stage('Deploy - Docker Run') {
+    steps {
+        echo 'Deploying container locally...'
+        sh '''
+        docker stop $CONTAINER_NAME || true
+        docker rm $CONTAINER_NAME || true
+        docker run -d --name $CONTAINER_NAME -p $PORT:3000 $IMAGE_NAME
+        '''
+    }
+}
     }
 
     post {
