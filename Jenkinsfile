@@ -2,44 +2,55 @@ pipeline {
     agent any
 
     environment {
-        IMAGE_NAME = "file-upload-app"
+        APP_NAME = 'file-upload-app'
+        IMAGE_NAME = 'file-upload-app'
+        CONTAINER_NAME = 'file-upload-container'
+        PORT = '3000'
     }
 
     stages {
-
         stage('Build') {
             steps {
-                echo 'Code already checked out by Jenkins'
+                echo 'Building the application...'
+                sh 'npm install'
             }
         }
 
         stage('Test') {
             steps {
-                bat 'node -v'
-                bat 'npm -v'
+                echo 'Running tests...'
+                sh 'npm test'
             }
         }
 
         stage('Package - Docker Build') {
             steps {
-                bat 'docker build -t file-upload-app .'
+                echo 'Building Docker image...'
+                sh 'docker build -t $IMAGE_NAME .'
             }
         }
 
         stage('Deploy - Docker Run') {
             steps {
-                bat 'docker rm -f file-upload-app || exit 0'
-                bat 'docker run -d -p 3000:3000 --name file-upload-app file-upload-app'
+                echo 'Deploying container locally...'
+                sh '''
+                docker stop $CONTAINER_NAME || true
+                docker rm $CONTAINER_NAME || true
+                docker run -d --name $CONTAINER_NAME -p $PORT:$PORT $IMAGE_NAME
+                '''
             }
         }
     }
 
     post {
         success {
-            echo 'PIPELINE SUCCESS 🎉'
+            echo 'PIPELINE SUCCESS ✅'
         }
         failure {
             echo 'PIPELINE FAILED ❌'
+        }
+        always {
+            echo 'Pipeline finished.'
         }
     }
 }
