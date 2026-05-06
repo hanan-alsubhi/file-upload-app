@@ -13,6 +13,7 @@ pipeline {
             steps {
                 echo 'Building and testing using Node Docker Image...'
                 // هنا نستخدم حاوية نود مؤقتة لتنفيذ الأوامر بدلاً من الاعتماد على الماك مباشرة
+                
                 sh "docker run --rm -v ${WORKSPACE}:/app -w /app node:20-alpine sh -c 'npm install && npm run build && npm test || true'"
             }
         }
@@ -31,7 +32,7 @@ pipeline {
                 sh """
                 docker stop ${CONTAINER_NAME} || true
                 docker rm ${CONTAINER_NAME} || true
-                docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
+                docker run -d --name ${CONTAINER_NAME} -p ${PORT} 3001:3000 ${IMAGE_NAME}
                 """
             }
         }
