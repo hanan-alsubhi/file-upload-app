@@ -9,19 +9,17 @@ pipeline {
     }
 
     stages {
-        stage('Build & Test') {
+        stage('Install & Test') {
             steps {
-                echo 'Building and testing using Node Docker Image...'
-                // هنا نستخدم حاوية نود مؤقتة لتنفيذ الأوامر بدلاً من الاعتماد على الماك مباشرة
-                
-                sh "docker run --rm -v ${WORKSPACE}:/app -w /app node:20-alpine sh -c 'npm install && npm run build && npm test || true'"
+                echo 'Installing dependencies...'
+                // حذفنا npm run build لأنه غير موجود في مشروعك
+                sh "docker run --rm -v ${WORKSPACE}:/app -w /app node:20-alpine sh -c 'npm install && npm test || true'"
             }
         }
 
         stage('Package - Docker Build') {
             steps {
                 echo 'Building final Docker image...'
-                // استخدام علامات التنصيص المزدوجة " " ضروري لقراءة المتغيرات بشكل صحيح
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
@@ -32,15 +30,14 @@ pipeline {
                 sh """
                 docker stop ${CONTAINER_NAME} || true
                 docker rm ${CONTAINER_NAME} || true
-                docker run -d --name ${CONTAINER_NAME} -p ${PORT} 3001:3000 ${IMAGE_NAME}
+                docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
                 """
             }
         }
     }
 
     post {
-        success { echo 'PIPELINE SUCCESS ✅' }
+        success { echo 'PIPELINE SUCCESS ✅ - اذهبي الآن لـ localhost:3001' }
         failure { echo 'PIPELINE FAILED ❌' }
-        always { echo 'Pipeline finished.' }
     }
 }
