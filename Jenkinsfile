@@ -33,6 +33,7 @@ pipeline {
                 docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
                 """
             }
+            
         }
     }
 
