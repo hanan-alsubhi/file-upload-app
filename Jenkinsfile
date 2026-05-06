@@ -1,5 +1,12 @@
 pipeline {
-    agent any
+    // إخبار جنكيز باستخدام حاوية نود جاهزة للقيام بالبناء
+    agent {
+        docker { 
+            image 'node:20-alpine' 
+            // هذا السطر مهم جداً لكي يستطيع جنكيز (داخل الحاوية) التحدث مع دوكر الماك
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
 
     environment {
         APP_NAME = 'file-upload-app'
@@ -12,7 +19,9 @@ pipeline {
         stage('Build') {
             steps {
                 echo 'Building the application...'
+                // الآن npm ستعمل لأننا داخل حاوية نود
                 sh 'npm install'
+                sh 'npm run build'
             }
         }
 
@@ -26,31 +35,26 @@ pipeline {
         stage('Package - Docker Build') {
             steps {
                 echo 'Building Docker image...'
-                sh 'docker build -t $IMAGE_NAME .'
+                // استخدام علامات التنصيص المزدوجة لضمان قراءة المتغيرات
+                sh "docker build -t ${IMAGE_NAME} ."
             }
         }
 
-       stage('Deploy - Docker Run') {
-    steps {
-        echo 'Deploying container locally...'
-        sh '''
-        docker stop $CONTAINER_NAME || true
-        docker rm $CONTAINER_NAME || true
-        docker run -d --name $CONTAINER_NAME -p $PORT:3000 $IMAGE_NAME
-        '''
-    }
-}
+        stage('Deploy - Docker Run') {
+            steps {
+                echo 'Deploying container locally...'
+                sh """
+                docker stop ${CONTAINER_NAME} || true
+                docker rm ${CONTAINER_NAME} || true
+                docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
+                """
+            }
+        }
     }
 
     post {
-        success {
-            echo 'PIPELINE SUCCESS ✅'
-        }
-        failure {
-            echo 'PIPELINE FAILED ❌'
-        }
-        always {
-            echo 'Pipeline finished.'
-        }
+        success { echo 'PIPELINE SUCCESS ✅' }
+        failure { echo 'PIPELINE FAILED ❌' }
+        always { echo 'Pipeline finished.' }
     }
 }
