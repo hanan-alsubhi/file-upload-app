@@ -3,6 +3,8 @@ pipeline {
 
     environment {
         IMAGE_NAME = 'file-upload-app'
+        CONTAINER_NAME = 'file-upload-app-container'
+        PORT = '3001'
     }
 
     stages {
