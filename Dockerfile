@@ -1,18 +1,19 @@
-# 1. تحديد النظام الأساسي (Node.js إصدار 18)
+# 1. Base Image: Using Node.js v18 as the standardized environment.
+# This ensures that we and the Jenkins server run the exact same version.
 FROM node:18
 
-# 2. إنشاء مجلد العمل داخل الحاوية
 WORKDIR /app
 
-# 3. نسخ ملفات التعريف وتثبيت المكتبات
+# Install dependencies
 COPY package*.json ./
 RUN npm install
 
-# 4. نسخ بقية ملفات المشروع إلى الحاوية
+# Copying the source code into the container image
 COPY . .
 
 # 5. إعلام دوكر بأن التطبيق يعمل على منفذ 3000 داخلياً
 EXPOSE 3000
 
-# 6. أمر تشغيل التطبيق (تأكدي أن ملفك الأساسي اسمه server.js)
+# Standardized entry point for the application. 
+# Ensure the main entry file is named 'server.js' to avoid startup failures.
 CMD ["node", "server.js"]
