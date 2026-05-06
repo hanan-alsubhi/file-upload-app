@@ -42,19 +42,19 @@ pipeline {
          */
 
 
-    //     stage('Deploy - Docker Run') {
-    //         steps {
-    //             echo 'Deploying container locally...'
-    //             sh """
-    //             docker stop ${CONTAINER_NAME} || true
-    //             docker rm ${CONTAINER_NAME} || true
-    //             docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
-    //             """
-    //         }
+        // stage('Deploy - Docker Run') {
+        //     steps {
+        //         echo 'Deploying container locally...'
+        //         sh """
+        //         docker stop ${CONTAINER_NAME} || true
+        //         docker rm ${CONTAINER_NAME} || true
+        //         docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
+        //         """
+        //     }
         
             
-    //     }
-    // }
+        // }
+    }
 
     post {
         success {
