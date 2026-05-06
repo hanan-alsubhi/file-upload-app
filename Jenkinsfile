@@ -22,19 +22,19 @@ pipeline {
                 sh "docker build -t ${IMAGE_NAME} ."
             }
         }
-        stage('Deploy - Docker Run') {
-            steps {
-                echo 'Deploying container locally...'
-                // إيقاف وحذف أي حاوية قديمة بنفس الاسم لتجنب التعارض
-                // ثم تشغيل الحاوية الجديدة وربط المنفذ 3001 بـ 3000
-                sh """
-                docker stop ${CONTAINER_NAME} || true
-                docker rm ${CONTAINER_NAME} || true
-                docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
-                """
-            }
+        // stage('Deploy - Docker Run') {
+        //     steps {
+        //         echo 'Deploying container locally...'
+        //         // إيقاف وحذف أي حاوية قديمة بنفس الاسم لتجنب التعارض
+        //         // ثم تشغيل الحاوية الجديدة وربط المنفذ 3001 بـ 3000
+        //         sh """
+        //         docker stop ${CONTAINER_NAME} || true
+        //         docker rm ${CONTAINER_NAME} || true
+        //         docker run -d --name ${CONTAINER_NAME} -p ${PORT}:3000 ${IMAGE_NAME}
+        //         """
+        //     }
             
-        }
+        // }
     }
 
     post {
