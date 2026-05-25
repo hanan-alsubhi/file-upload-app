@@ -58,6 +58,7 @@ pipeline {
 
 
 
+
     post {
         success {
             echo "✅ تم التنفيذ بنجاح"
