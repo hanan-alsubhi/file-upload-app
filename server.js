@@ -9,6 +9,7 @@ app.get('/', (req, res) => {
     res.render('index');
 });
 
+
 var storage = multer.diskStorage({
     destination: function (req, file, callback) {
         var dir = './uploads';
